@@ -1,0 +1,39 @@
+{
+  "name": "bulostfound",
+  "version": "1.0.0",
+  "description": "A website for Binghamton University students to match lost and found items across campus",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "ping": "tsx src/pingDB.ts",
+    "dev": "npm install && nodemon --watch src/**/*.ts --exec tsx src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ami1092/BULostFound.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ami1092/BULostFound/issues"
+  },
+  "homepage": "https://github.com/ami1092/BULostFound#readme",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "@types/pg": "^8.23.1",
+    "nodemon": "^3.1.14",
+    "supabase": "^2.122.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
