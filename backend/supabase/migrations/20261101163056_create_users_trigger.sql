@@ -22,6 +22,7 @@ begin
   values (
     new.id,      -- same id as the auth user, which satisfies the foreign key to auth.users(id)
     new.email    -- email that Google gave us
+    --new holds the row that was just inserted into auth.users, so we can access its fields with new.field_name
   )
   -- If a row already exists (e.g. the email is already taken, since email is unique),
   -- skip the insert instead of erroring. Without this, a conflict would make the
