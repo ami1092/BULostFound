@@ -16,3 +16,12 @@ Supabase Initialization
 Trigger created for auth.users and public.users
 - Runs a function on a row addition to auth.users
 - this function populates our users table with auth.usrs information
+
+Google Sign-In Test Page
+- Added backend/src/index.html, a standalone page for testing Google OAuth sign-in through Supabase.
+- Loads supabase-js from a CDN and connects with the project URL and publishable (anon) key.
+- "Sign in with Google" button starts the OAuth flow and redirects back to the same page; the hd=binghamton.edu hint only filters Google's account picker and is not a security check.
+- After sign-in, shows the user's email, id, provider, account creation time and token expiry, and flags whether the account is @binghamton.edu.
+- Shows a clear error message when sign-in fails, including errors Google or Supabase return in the redirect URL.
+- "Copy access token" button copies the session's JWT for testing authenticated backend requests.
+- "Sign out" button ends the Supabase session.

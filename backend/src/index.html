@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BULostFound Auth Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; line-height: 1.5; }
+    button { font-size: 16px; padding: 8px 16px; margin-right: 8px; cursor: pointer; }
+    pre { background: #f2f2f2; padding: 12px; border-radius: 6px; white-space: pre-wrap; word-break: break-all; }
+    .ok { color: #1a7f37; font-weight: 600; }
+    .bad { color: #cf222e; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>BULostFound sign-in test</h1>
+ 
+  <button id="login">Sign in with Google</button>
+  <button id="logout" hidden>Sign out</button>
+  <button id="copy" hidden>Copy access token</button>
+ 
+  <p id="status">Checking session…</p>
+  <p id="domain"></p>
+  <pre id="details" hidden></pre>
+ 
+  <script>
+    const SUPABASE_URL = "https://goayiokesaqvnutmfypz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable__XYekFQnzhhRw9HWjbFiHQ_75wDQR_A";
+ 
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+ 
+    const $ = (id) => document.getElementById(id);
+    let currentToken = null;
+ 
+    // After Google sends you back, Supabase puts either the session or an error in the URL.
+    // Grab any error now, before supabase-js cleans up the address bar.
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const queryParams = new URLSearchParams(window.location.search);
+    const urlError =
+      hashParams.get("error_description") || queryParams.get("error_description") ||
+      hashParams.get("error") || queryParams.get("error");
+    const cameBackFromGoogle =
+      hashParams.has("access_token") || queryParams.has("code") || !!urlError;
+    console.log("Returned URL:", window.location.href);
+ 
+    async function render() {
+      // initialize() reports why reading the session from the URL failed, if it did
+      const { error: initError } = await client.auth.initialize();
+      if (initError) console.error("Supabase init error:", initError);
+ 
+      const { data: { session }, error } = await client.auth.getSession();
+ 
+      if (error) {
+        $("status").textContent = "Error: " + error.message;
+        return;
+      }
+ 
+      if (!session) {
+        currentToken = null;
+        if (urlError) {
+          $("status").textContent = "Sign-in failed: " + urlError.replace(/\+/g, " ");
+          $("status").className = "bad";
+        } else if (initError) {
+          $("status").textContent = "Sign-in failed: " + initError.message;
+          $("status").className = "bad";
+        } else if (cameBackFromGoogle) {
+          $("status").textContent = "Came back from Google, but no session was created. Check the browser console (F12).";
+          $("status").className = "bad";
+        } else {
+          $("status").textContent = "Not signed in.";
+          $("status").className = "";
+        }
+        $("domain").textContent = "";
+        $("details").hidden = true;
+        $("login").hidden = false;
+        $("logout").hidden = true;
+        $("copy").hidden = true;
+        return;
+      }
+ 
+      const user = session.user;
+      const email = (user.email || "").toLowerCase();
+      const isBing = email.endsWith("@binghamton.edu");
+      currentToken = session.access_token;
+ 
+      $("status").textContent = "Signed in as " + user.email;
+      $("status").className = "";
+      $("domain").textContent = isBing
+        ? "✓ @binghamton.edu account"
+        : "✗ Not a @binghamton.edu account (your trigger will block this later)";
+      $("domain").className = isBing ? "ok" : "bad";
+ 
+      $("details").textContent = JSON.stringify({
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.full_name,
+        provider: user.app_metadata?.provider,
+        created_at: user.created_at,
+        token_expires: new Date(session.expires_at * 1000).toLocaleString()
+      }, null, 2);
+      $("details").hidden = false;
+ 
+      $("login").hidden = true;
+      $("logout").hidden = false;
+      $("copy").hidden = false;
+    }
+ 
+    $("login").onclick = async () => {
+      const { error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname,
+          queryParams: { hd: "binghamton.edu" } // only filters Google's account picker, not real security
+        }
+      });
+      if (error) $("status").textContent = "Error: " + error.message;
+    };
+ 
+    $("logout").onclick = async () => {
+      await client.auth.signOut();
+      render();
+    };
+ 
+    $("copy").onclick = async () => {
+      if (!currentToken) return;
+      await navigator.clipboard.writeText(currentToken);
+      $("copy").textContent = "Copied!";
+      setTimeout(() => ($("copy").textContent = "Copy access token"), 1500);
+    };
+ 
+    client.auth.onAuthStateChange(() => render());
+    render();
+  </script>
+</body>
+</html>
+ 
+ 
