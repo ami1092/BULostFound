@@ -25,3 +25,6 @@ Google Sign-In Test Page
 - Shows a clear error message when sign-in fails, including errors Google or Supabase return in the redirect URL.
 - "Copy access token" button copies the session's JWT for testing authenticated backend requests.
 - "Sign out" button ends the Supabase session.
+
+Server code with API calls
+- Added server.ts code with basic API functions: get status, get/post items, get users
