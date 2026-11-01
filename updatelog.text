@@ -12,3 +12,7 @@ Supabase Initialization
 - Initialized the Supabase CLI in backend/ with supabase init, which created the supabase/ directory and config.toml.
 - Linked the local project to the hosted Supabase project with supabase link.
 - Created the supabase/migrations/ directory for version-controlled schema changes, applied with supabase db push.
+
+Trigger created for auth.users and public.users
+- Runs a function on a row addition to auth.users
+- this function populates our users table with auth.usrs information
