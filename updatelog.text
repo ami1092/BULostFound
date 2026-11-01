@@ -1,1 +1,14 @@
+Backend Setup (TypeScript)
+- Created the backend/ directory and initialized the Node.js project with npm init.
+- Installed Express as the server framework, along with TypeScript, Node/Express type definitions, ts-node and nodemon for development.
+- Added tsconfig.json with strict mode enabled, src/ as the source directory and dist/ as the build output.
+- Added build, start and dev scripts to package.json.
+- Added src/server.ts as the server entry point.
+- Added a backend .gitignore covering node_modules, dist and environment files.
+- Added .env.example documenting the required environment variables (PORT, DATABASE_URL).
+- Added src/pingDB.ts, a script to verify the database connection.
 
+Supabase Initialization
+- Initialized the Supabase CLI in backend/ with supabase init, which created the supabase/ directory and config.toml.
+- Linked the local project to the hosted Supabase project with supabase link.
+- Created the supabase/migrations/ directory for version-controlled schema changes, applied with supabase db push.
