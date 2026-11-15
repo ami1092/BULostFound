@@ -24,7 +24,7 @@ app.get("/status", (req: any, res: any) => {
   });
 });
 
-app.get("/api/items", async (req: any, res: any) => {
+app.get("/api/items", requireAuth, async (req: any, res: any) => {
   try {
     const result = await pool.query(
       "SELECT * FROM items ORDER BY id DESC"
@@ -36,7 +36,7 @@ app.get("/api/items", async (req: any, res: any) => {
   }
 });
 
-app.post("/api/items", async (req: any, res: any) => {
+app.post("/api/items", requireAuth , async (req: any, res: any) => {
   const {
     item_name,
     item_description,
@@ -67,7 +67,7 @@ app.post("/api/items", async (req: any, res: any) => {
   }
 });
 
-app.get("/api/users", async (req: any, res: any) => {
+app.get("/api/users", requireAuth, async (req: any, res: any) => {
   try {
     const result = await pool.query("SELECT * FROM users ORDER BY created_at DESC");
     res.json(result.rows);
