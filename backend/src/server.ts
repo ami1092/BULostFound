@@ -2,6 +2,7 @@
 // Note: API requests are currently public, but should be restricted to only logged in users later, maybe through passing in an authentication token
 
 import "dotenv/config";
+import { requireAuth, requireAdmin } from './middleware/auth'
 
 const express = require("express");
 const { Pool } = require("pg");
