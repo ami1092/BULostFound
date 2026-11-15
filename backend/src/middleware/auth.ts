@@ -26,28 +26,28 @@ export const requireAuth = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader = req.headers.authorization
+  const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'No token provided.' })
-    return
+    res.status(401).json({ message: 'No token provided.' });
+    return;
   }
 
-  const token = authHeader.split(' ')[1]
-  const { data: { user }, error } = await supabase.auth.getUser(token)
+  const token = authHeader.split(' ')[1];
+  const { data: { user }, error } = await supabase.auth.getUser(token);
 
   if (error || !user) {
-    res.status(401).json({ message: 'Invalid or expired token.' })
-    return
+    res.status(401).json({ message: 'Invalid or expired token.' });
+    return;
   }
 
   if (!user.email?.endsWith('@binghamton.edu')) {
-    res.status(403).json({ message: 'Access restricted to Binghamton accounts only.' })
-    return
+    res.status(403).json({ message: 'Access restricted to Binghamton accounts only.' });
+    return;
   }
 
-  req.user = user
-  next()
+  req.user = user;
+  next();
 }
 
 /**
@@ -60,25 +60,25 @@ export const requireAdmin = async (
   next: NextFunction
 ): Promise<void> => {
   if (!req.user) {
-    res.status(401).json({ message: 'Not authenticated.' })
-    return
+    res.status(401).json({ message: 'Not authenticated.' });
+    return;
   }
 
   const { data, error } = await supabase
     .from('users')           // change this if your table is named differently
     .select('role')
     .eq('email', req.user.email)
-    .single()
+    .single();
 
   if (error || !data) {
-    res.status(403).json({ message: 'User not found in database.' })
-    return
+    res.status(403).json({ message: 'User not found in database.' });
+    return;
   }
 
   if (data.role !== 'admin') {
-    res.status(403).json({ message: 'Admin access required.' })
-    return
+    res.status(403).json({ message: 'Admin access required.' });
+    return;
   }
 
-  next()
+  next();
 }

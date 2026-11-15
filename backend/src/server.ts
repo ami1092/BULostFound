@@ -36,15 +36,15 @@ app.get("/api/items", requireAuth, async (req: any, res: any) => {
   }
 });
 
-app.post("/api/items", requireAuth , async (req: any, res: any) => {
+app.post("/api/items", requireAuth, async (req: any, res: any) => {
   const {
     item_name,
     item_description,
     image_url,
     item_type,
     found_location,
-    user_id,
   } = req.body;
+  const user_id = req.user?.id;
 
   if (!item_name || !item_description || !image_url || !item_type || !found_location) {
     return res.status(400).json({ error: "Missing required item fields" });
