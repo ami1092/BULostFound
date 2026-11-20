@@ -28,3 +28,10 @@ Google Sign-In Test Page
 
 Server code with API calls
 - Added server.ts code with basic API functions: get status, get/post items, get users
+
+20-11-2026 14:15
+front-end branch
+- Created front-end branch
+- Created frontend folder in home directory
+- Created base templates for html files: home.html, items.html, and post.html
+- Basic functionality includes navbar and headings on each page
